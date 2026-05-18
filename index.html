@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurévia — Presence in Scent</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --cream: #f5f0e8; --warm-white: #faf8f4;
+  --gold: #c9a96e; --gold-light: #e8d5a3; --gold-dark: #a07840;
+  --charcoal: #1a1714; --text: #2d2820; --muted: #8a7d6b;
+  --error: #c0392b; --success: #27ae60;
+  --border: rgba(201,169,110,0.22);
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Jost', sans-serif; background: var(--warm-white); color: var(--text); overflow-x: hidden; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.3rem 4rem;
+  background: rgba(250,248,244,0.96); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 600; letter-spacing: 0.06em; color: var(--text); text-decoration: none; }
+.nav-logo em { color: var(--gold); font-style: italic; }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a { font-size: 0.67rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.3s; }
+.nav-links a:hover { color: var(--gold-dark); }
+.nav-right { display: flex; align-items: center; gap: 1rem; }
+.cart-pill { display: flex; align-items: center; gap: 0.5rem; background: var(--charcoal); color: var(--cream); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.6rem 1.4rem; border: none; cursor: pointer; font-family: 'Jost', sans-serif; transition: background 0.3s; }
+.cart-pill:hover { background: var(--gold-dark); }
+.cart-pill .c-badge { background: var(--gold); color: var(--charcoal); font-size: 0.58rem; font-weight: 600; width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; padding: 9rem 4rem 5rem;
+  background: linear-gradient(160deg, #f5f0e8 0%, #ede5d5 55%, #f8f4ec 100%);
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 72% 48%, rgba(201,169,110,0.13) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-content { text-align: center; max-width: 640px; animation: fadeUp 1.1s ease both; }
+.hero-eye { font-size: 0.62rem; letter-spacing: 0.38em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.4rem; }
+.hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(3.8rem, 9vw, 7rem); font-weight: 300; line-height: 0.95; color: var(--text); margin-bottom: 0.5rem; }
+.hero-title em { font-style: italic; color: var(--gold-dark); }
+.hero-sub { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; color: var(--muted); margin-bottom: 2.5rem; letter-spacing: 0.06em; }
+.hero-line { width: 50px; height: 1px; background: var(--gold); margin: 0 auto 2.5rem; }
+.hero-price-tag { display: inline-block; background: var(--charcoal); color: var(--gold-light); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; padding: 0.55rem 1.8rem; margin-bottom: 1.4rem; }
+.hero-btn { display: inline-block; font-size: 0.67rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--charcoal); background: transparent; padding: 0.9rem 2.8rem; text-decoration: none; border: 1px solid var(--charcoal); transition: all 0.35s; margin-left: 0.8rem; }
+.hero-btn:hover { background: var(--charcoal); color: var(--cream); }
+.hero-scroll { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+.hero-scroll span { font-size: 0.58rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); }
+.scroll-line { width: 1px; height: 40px; background: var(--gold); animation: pulse 2.2s ease-in-out infinite; }
+
+/* ── SECTION HEADER ── */
+.sec-hdr { text-align: center; margin-bottom: 3.5rem; }
+.sec-label { font-size: 0.6rem; letter-spacing: 0.38em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 0.8rem; }
+.sec-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 300; color: var(--text); line-height: 1.1; }
+
+/* ── COLLECTION ── */
+.collection { padding: 7rem 4rem; background: var(--warm-white); }
+.products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
+
+.product-card {
+  background: var(--cream); position: relative; overflow: hidden; cursor: pointer;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  animation: fadeUp 0.8s ease both;
+}
+.product-card:hover { transform: translateY(-5px); box-shadow: 0 18px 44px rgba(160,120,64,0.14); }
+.product-img-wrap { position: relative; overflow: hidden; aspect-ratio: 4/5; background: linear-gradient(145deg, #ede8de, #f5f0e8); }
+.product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+.product-card:hover .product-img-wrap img { transform: scale(1.05); }
+.product-overlay { position: absolute; inset: 0; background: rgba(26,23,20,0.58); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+.product-card:hover .product-overlay { opacity: 1; }
+.add-btn {
+  font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--cream); border: 1px solid rgba(255,255,255,0.65); padding: 0.8rem 1.8rem;
+  cursor: pointer; background: rgba(201,169,110,0.22); font-family: 'Jost', sans-serif;
+  transition: background 0.3s;
+}
+.add-btn:hover { background: rgba(201,169,110,0.5); }
+.add-btn.added { background: rgba(39,174,96,0.4); border-color: rgba(39,174,96,0.7); }
+.product-info { padding: 1.2rem 1.3rem 1.5rem; display: flex; justify-content: space-between; align-items: flex-end; }
+.product-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 400; color: var(--text); }
+.product-vol { font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-top: 0.2rem; }
+.product-price { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--gold-dark); font-weight: 400; }
+
+/* ── QUOTE BANNER ── */
+.quote-banner { padding: 7rem 4rem; background: var(--charcoal); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.quote-banner::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 60%, rgba(201,169,110,0.07) 0%, transparent 60%); }
+.quote-inner { max-width: 680px; text-align: center; position: relative; }
+.quote-txt { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.5rem, 3.2vw, 2.4rem); font-weight: 300; font-style: italic; color: var(--cream); line-height: 1.55; margin-bottom: 1.8rem; }
+.quote-txt em { color: var(--gold-light); font-style: normal; }
+.quote-by { font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); }
+
+/* ── ORDER SECTION ── */
+.order-section { padding: 7rem 4rem; background: var(--cream); }
+.order-inner { max-width: 960px; margin: 0 auto; }
+
+/* Cart summary strip */
+.cart-strip {
+  background: var(--warm-white); border: 1px solid var(--border); padding: 1.5rem 2rem;
+  margin-bottom: 2.5rem; display: flex; flex-direction: column; gap: 0.8rem;
+}
+.cart-strip-title { font-size: 0.6rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 0.3rem; }
+.cart-strip-empty { font-size: 0.78rem; color: var(--muted); font-style: italic; }
+.cart-item-line { display: flex; align-items: center; justify-content: space-between; padding: 0.55rem 0; border-bottom: 1px solid var(--border); }
+.cart-item-line:last-child { border-bottom: none; }
+.cart-item-line .c-name { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; }
+.cart-item-line .c-price { color: var(--gold-dark); font-size: 0.85rem; font-weight: 500; }
+.cart-item-line .c-remove { background: none; border: none; cursor: pointer; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: underline; font-family: 'Jost', sans-serif; margin-left: 1rem; }
+.cart-total { display: flex; justify-content: space-between; align-items: center; padding-top: 0.9rem; border-top: 1px solid rgba(201,169,110,0.35); margin-top: 0.3rem; }
+.cart-total .t-label { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+.cart-total .t-amount { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--charcoal); }
+
+/* Form */
+.form-card { background: var(--warm-white); border: 1px solid var(--border); padding: 2.5rem; margin-bottom: 2rem; }
+.form-card-title { font-size: 0.6rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 1.8rem; display: flex; align-items: center; gap: 0.6rem; }
+.form-card-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.form-group { margin-bottom: 1.1rem; }
+.form-group label { display: block; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+.form-group label .req { color: var(--gold-dark); }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 0.78rem 1rem;
+  border: 1px solid rgba(138,125,107,0.28); background: var(--cream);
+  font-family: 'Jost', sans-serif; font-size: 0.82rem; color: var(--text);
+  outline: none; transition: border-color 0.25s; -webkit-appearance: none; appearance: none;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold); background: var(--warm-white); }
+.form-group input.error, .form-group select.error, .form-group textarea.error { border-color: var(--error); }
+.field-error { font-size: 0.61rem; color: var(--error); margin-top: 0.3rem; display: none; }
+.field-error.show { display: block; }
+.form-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%238a7d6b' stroke-width='1.4' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem;
+}
+.form-group textarea { resize: vertical; min-height: 80px; }
+
+/* Delivery radio cards */
+.delivery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; margin-bottom: 0.5rem; }
+.del-radio { display: none; }
+.del-label {
+  display: block; padding: 1rem 1.2rem; cursor: pointer;
+  border: 1px solid rgba(138,125,107,0.28); background: var(--cream);
+  transition: border-color 0.25s, background 0.25s;
+}
+.del-radio:checked + .del-label { border-color: var(--gold); background: rgba(201,169,110,0.07); }
+.del-label .d-t { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; margin-bottom: 0.2rem; color: var(--text); }
+.del-label .d-s { font-size: 0.65rem; color: var(--muted); }
+.speed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin: 1rem 0; }
+.spd-radio { display: none; }
+.spd-label { display: block; padding: 0.85rem 1rem; cursor: pointer; border: 1px solid rgba(138,125,107,0.22); background: var(--cream); transition: border-color 0.25s; }
+.spd-radio:checked + .spd-label { border-color: var(--gold-dark); background: rgba(160,120,64,0.06); }
+.spd-label .s-n { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.18rem; color: var(--text); }
+.spd-label .s-p { font-size: 0.78rem; color: var(--gold-dark); font-weight: 500; }
+.spd-label .s-t { font-size: 0.61rem; color: var(--muted); }
+.sub-fields { display: none; }
+.sub-fields.active { display: block; }
+.del-note-txt { font-size: 0.68rem; color: var(--muted); line-height: 1.65; margin-bottom: 0.8rem; }
+
+/* Pay button */
+.pay-btn {
+  width: 100%; padding: 1.2rem; background: var(--charcoal); color: var(--cream);
+  border: none; cursor: pointer; font-family: 'Jost', sans-serif;
+  font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase;
+  transition: background 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.7rem;
+}
+.pay-btn:hover { background: var(--gold-dark); }
+.pay-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.pay-btn svg { width: 20px; height: 20px; fill: currentColor; }
+.pay-note { font-size: 0.62rem; color: var(--muted); text-align: center; margin-top: 0.8rem; line-height: 1.6; }
+.secure-badges { display: flex; align-items: center; justify-content: center; gap: 1.2rem; margin-top: 1rem; }
+.secure-badge { font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 0.3rem; }
+.secure-badge svg { width: 13px; height: 13px; fill: var(--gold); }
+
+/* Empty cart warning */
+.empty-warn { text-align: center; padding: 2rem; background: var(--warm-white); border: 1px dashed rgba(201,169,110,0.4); font-size: 0.78rem; color: var(--muted); line-height: 1.8; margin-bottom: 2rem; display: none; }
+.empty-warn.show { display: block; }
+
+/* ── SHIPPING ── */
+.shipping { padding: 7rem 4rem; background: var(--warm-white); }
+.ship-inner { max-width: 920px; margin: 0 auto; }
+.processing-banner { background: var(--charcoal); color: var(--cream); padding: 1.3rem 1.8rem; margin-bottom: 2.5rem; display: flex; align-items: flex-start; gap: 1rem; }
+.processing-banner svg { width: 20px; height: 20px; fill: var(--gold); flex-shrink: 0; margin-top: 2px; }
+.processing-banner p { font-size: 0.73rem; line-height: 1.8; color: rgba(250,248,244,0.85); }
+.ship-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.8rem; margin-bottom: 2rem; }
+.ship-card { background: var(--cream); border: 1px solid var(--border); padding: 1.8rem; }
+.ship-card-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 400; margin-bottom: 1.1rem; color: var(--text); display: flex; align-items: center; gap: 0.5rem; }
+.ship-card-title svg { width: 19px; height: 19px; fill: var(--gold); }
+.ship-opt { border-bottom: 1px solid var(--border); padding: 0.8rem 0; }
+.ship-opt:last-of-type { border-bottom: none; }
+.ship-opt-name { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); font-weight: 500; margin-bottom: 0.25rem; }
+.ship-opt-meta { display: flex; gap: 1.2rem; font-size: 0.68rem; color: var(--muted); }
+.ship-price { color: var(--gold-dark); font-weight: 500; }
+.ship-foot { font-size: 0.67rem; color: var(--muted); margin-top: 0.9rem; line-height: 1.6; }
+.notes-list { list-style: none; }
+.notes-list li { font-size: 0.76rem; color: var(--muted); line-height: 1.85; padding-left: 1.2rem; position: relative; }
+.notes-list li::before { content: '—'; position: absolute; left: 0; color: var(--gold); }
+
+/* ── CONTACT ── */
+.contact { padding: 7rem 4rem; background: var(--charcoal); text-align: center; }
+.contact-inner { max-width: 520px; margin: 0 auto; }
+.contact .sec-label { color: var(--gold); }
+.contact .sec-title { color: var(--cream); }
+.contact p { font-size: 0.85rem; color: rgba(250,248,244,0.65); line-height: 1.9; margin: 1.5rem 0 2.5rem; }
+.wa-btn { display: inline-flex; align-items: center; gap: 0.7rem; background: #25D366; color: #fff; font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; padding: 1rem 2.5rem; text-decoration: none; transition: background 0.3s, transform 0.3s; }
+.wa-btn:hover { background: #128C7E; transform: translateY(-2px); }
+.wa-btn svg { width: 19px; height: 19px; fill: currentColor; }
+.contact-note { margin-top: 1.5rem; font-size: 0.62rem; letter-spacing: 0.1em; color: rgba(250,248,244,0.38); }
+
+/* ── FOOTER ── */
+footer { background: #110f0d; padding: 2.2rem 4rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+.footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--cream); letter-spacing: 0.06em; }
+.footer-logo em { color: var(--gold); font-style: italic; }
+.footer-copy { font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  background: var(--charcoal); color: var(--cream); padding: 0.85rem 1.8rem;
+  font-size: 0.72rem; letter-spacing: 0.06em; z-index: 600;
+  opacity: 0; transition: opacity 0.3s; pointer-events: none;
+  max-width: 90vw; text-align: center;
+}
+#toast.show { opacity: 1; }
+
+/* ── PAYFAST OVERLAY ── */
+.pf-overlay { position: fixed; inset: 0; background: rgba(26,23,20,0.7); z-index: 500; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.pf-overlay.open { opacity: 1; pointer-events: all; }
+.pf-box { background: var(--warm-white); max-width: 460px; width: 95%; padding: 2.5rem; text-align: center; animation: fadeUp 0.3s ease; }
+.pf-box h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 300; margin-bottom: 0.7rem; }
+.pf-box p { font-size: 0.78rem; color: var(--muted); line-height: 1.8; margin-bottom: 1.8rem; }
+.pf-spinner { width: 36px; height: 36px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 1.5rem; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+.product-card:nth-child(1){animation-delay:.04s} .product-card:nth-child(2){animation-delay:.10s}
+.product-card:nth-child(3){animation-delay:.16s} .product-card:nth-child(4){animation-delay:.22s}
+.product-card:nth-child(5){animation-delay:.28s} .product-card:nth-child(6){animation-delay:.34s}
+.product-card:nth-child(7){animation-delay:.40s} .product-card:nth-child(8){animation-delay:.46s}
+.product-card:nth-child(9){animation-delay:.52s} .product-card:nth-child(10){animation-delay:.58s}
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  .hero, .collection, .quote-banner, .order-section, .shipping, .contact { padding: 5rem 1.5rem; }
+  footer { padding: 2rem 1.5rem; flex-direction: column; text-align: center; }
+  .ship-grid, .form-row, .delivery-grid, .speed-grid { grid-template-columns: 1fr; }
+  .form-card { padding: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#"><span>Auré<em>via</em></span></a>
+  <ul class="nav-links">
+    <li><a href="#collection">Collection</a></li>
+    <li><a href="#order">Order</a></li>
+    <li><a href="#shipping">Shipping</a></li>
+    <li><a href="#contact">Help</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="cart-pill" onclick="scrollToOrder()">
+      Your Order &nbsp;<span class="c-badge" id="navCount">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <p class="hero-eye">by Londo M</p>
+    <h1 class="hero-title">Auré<em>via</em></h1>
+    <p class="hero-sub">presence in scent</p>
+    <div class="hero-line"></div>
+    <span class="hero-price-tag">Each fragrance — R200 · 55ml EDP</span><br>
+    <a class="hero-btn" href="#collection">Explore the Collection</a>
+    <a class="hero-btn" href="#order">Place an Order</a>
+  </div>
+  <div class="hero-scroll"><span>Scroll</span><div class="scroll-line"></div></div>
+</section>
+
+<!-- COLLECTION -->
+<section class="collection" id="collection">
+  <div class="sec-hdr">
+    <span class="sec-label">Our Fragrances</span>
+    <h2 class="sec-title">The Collection</h2>
+  </div>
+  <div class="products-grid" id="productsGrid">
+
+    <div class="product-card" data-name="Midnight Bloom" data-img="1000222322.jpg">
+      <div class="product-img-wrap">
+        <img src="midnight bloom.jpeg" alt="Midnight Bloom" onerror="this.style.opacity=0">
+        <div class="product-overlay">
+          <button class="add-btn" onclick="addToCart(this)">+ Add to Order</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div><p class="product-name">Midnight Bloom</p><p class="product-vol">55 ml · Eau de Parfum</p></div>
+        <span class="product-price">R200</span>
+      </div>
+    </div>
+
+    <div class="product-card" data-name="Bliss" data-img="1000222321.jpg">
+      <div class="product-img-wrap">
+        <img src="bliss.jpeg" alt="Bliss" onerror="this.style.opacity=0">
+        <div class="product-overlay">
+          <button class="add-btn" onclick="addToCart(this)">+ Add to Order</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div><p class="product-name">Bliss</p><p class="product-vol">55 ml · Eau de Parfum</p></div>
+        <span class="product-price">R200</span>
+      </div>
+    </div>
+
+    <div class="product-card" data-name="Velvet Oud" data-img="1000222320.jpg">
+      <div class="product-img-wrap">
+        <img src="velvetoud.jpeg" alt="Velvet Oud" onerror="this.style.opacity=0">
+        <div class="product-overlay">
+          <button class="add-btn" onclick="addToCart(this)">+ Add to Order</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div><p class="product-name">Velvet Oud</p><p class="product-vol">55 ml · Eau de Parfum</p></div>
+        <span class="product-price">R200</span>
+      </div>
+    </div>
+
+    <div class="product-card" data-name="Black Elixir" data-img="1000222319.jpg">
+      <div class="product-img-wrap">
+        <img src="black elixir.jpg" alt="Black Elixir" onerror="this.style.opacity=0">
+        <div class="product-overlay">
+          <button class="add-btn" onclick="addToCart(this)">+ Add to Order</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div><p class="product-name">Black Elixir</p><p class="product-vol">55 ml · Eau de Parfum</p></div>
+        <span class="product-price">R200</span>
+      </div>
+    </div>
+
+    <div class="product-card" data-name="Dominion" data-img="1000222318.jpg">
+      <div class="product-img-wrap">
+        <img src="dominion.jpeg" alt="Dominion" onerror="this.style.opacity=0">
+        <div class="product-overlay">
+          <button class="add-btn" onclick="addToCart(this)">+ Add to Order</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div><p class="product-name">Dominion</p><p class="product-vol">55 ml · Eau de Parfum</p></div>
+        <span class="product-price">R200</span>
+      </div>
+    </div>
+
+    <div class="product-card" data-name="Crimson Desire" data-img="1000222315.jpg">
+      <div class="product-img-wrap">
+        <img src="crimsondesire.jpg" alt="Crimson Desire" onerror="this.style.opacity=0">
+        <div class="product-overlay">
+          <button class="add-btn" onclick="addToCart(this)">+ Add to Order</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div><p class="product-name">Crimson Desire</p><p class="product-vol">55 ml · Eau de Parfum</p></div>
+        <span class="product-price">R200</span>
+      </div>
+    </div>
+
+    <div class="product-card" data-name="Innocent Sin" data-img="1000222316.jpg">
+      <div class="product-img-wrap">
+        <img src="innocent sin.jpeg" alt="Innocent Sin" onerror="this.style.opacity=0">
+        <div class="product-overlay">
+          <button class="add-btn" onclick="addToCart(this)">+ Add to Order</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div><p class="product-name">Innocent Sin</p><p class="product-vol">55 ml · Eau de Parfum</p></div>
+        <span class="product-price">R200</span>
+      </div>
+    </div>
+
+    <div class="product-card" data-name="Berry Dream" data-img="1000222317.jpg">
+      <div class="product-img-wrap">
+        <img src="berry dream.jpeg" alt="Berry Dream" onerror="this.style.opacity=0">
+        <div class="product-overlay">
+          <button class="add-btn" onclick="addToCart(this)">+ Add to Order</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div><p class="product-name">Berry Dream</p><p class="product-vol">55 ml · Eau de Parfum</p></div>
+        <span class="product-price">R200</span>
+      </div>
+    </div>
+
+    <div class="product-card" data-name="Azure Mist" data-img="1000222314.jpg">
+      <div class="product-img-wrap">
+        <img src="azure mist.jpeg" alt="Azure Mist" onerror="this.style.opacity=0">
+        <div class="product-overlay">
+          <button class="add-btn" onclick="addToCart(this)">+ Add to Order</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div><p class="product-name">Azure Mist</p><p class="product-vol">55 ml · Eau de Parfum</p></div>
+        <span class="product-price">R200</span>
+      </div>
+    </div>
+
+    <div class="product-card" data-name="Golden Vanilla" data-img="1000222313.jpg">
+      <div class="product-img-wrap">
+        <img src="goldenvanilla.jpeg" alt="Golden Vanilla" onerror="this.style.opacity=0">
+        <div class="product-overlay">
+          <button class="add-btn" onclick="addToCart(this)">+ Add to Order</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div><p class="product-name">Golden Vanilla</p><p class="product-vol">55 ml · Eau de Parfum</p></div>
+        <span class="product-price">R200</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- QUOTE BANNER -->
+<section class="quote-banner">
+  <div class="quote-inner">
+    <p class="quote-txt">"Every scent tells a story —<br>a quiet declaration of <em>who you are</em><br>before you even speak."</p>
+    <p class="quote-by">Aurévia · Presence in Scent · by Londo M</p>
+  </div>
+</section>
+
+<!-- ORDER SECTION -->
+<section class="order-section" id="order">
+  <div class="sec-hdr">
+    <span class="sec-label">Complete Your Purchase</span>
+    <h2 class="sec-title">Your Order</h2>
+  </div>
+  <div class="order-inner">
+
+    <!-- Cart summary -->
+    <div class="cart-strip">
+      <p class="cart-strip-title">Selected Fragrances</p>
+      <p class="cart-strip-empty" id="stripEmpty">No fragrances selected yet — hover over a product above and tap <strong>+ Add to Order</strong>.</p>
+      <div id="stripItems"></div>
+      <div class="cart-total" id="cartTotal" style="display:none">
+        <span class="t-label">Order Total (excl. delivery)</span>
+        <span class="t-amount" id="totalAmt">R0</span>
+      </div>
+    </div>
+
+    <div class="empty-warn" id="emptyWarn">Please select at least one fragrance from the collection above before proceeding.</div>
+
+    <!-- Personal Info -->
+    <div class="form-card">
+      <p class="form-card-title">1 · Personal Information</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name <span class="req">*</span></label>
+          <input type="text" id="fname" placeholder="e.g. Naledi Dlamini">
+          <p class="field-error" id="fname-err">Please enter your full name.</p>
+        </div>
+        <div class="form-group">
+          <label>Contact Number <span class="req">*</span></label>
+          <input type="tel" id="fphone" placeholder="e.g. 071 234 5678">
+          <p class="field-error" id="fphone-err">Please enter a valid contact number.</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Address <span class="req">*</span></label>
+        <input type="email" id="femail" placeholder="e.g. name@email.com">
+        <p class="field-error" id="femail-err">Please enter a valid email address.</p>
+      </div>
+    </div>
+
+    <!-- Delivery -->
+    <div class="form-card">
+      <p class="form-card-title">2 · Delivery Method</p>
+      <div class="delivery-grid">
+        <div>
+          <input type="radio" name="delivery" id="dPaxi" value="paxi" class="del-radio" onchange="onDelivery()">
+          <label class="del-label" for="dPaxi">
+            <p class="d-t">📦 PAXI</p>
+            <p class="d-s">Collect at PEP store · From R59.95</p>
+          </label>
+        </div>
+        <div>
+          <input type="radio" name="delivery" id="dCourier" value="courier" class="del-radio" onchange="onDelivery()">
+          <label class="del-label" for="dCourier">
+            <p class="d-t">🚚 Home Delivery</p>
+            <p class="d-s">The Courier Guy · From R100</p>
+          </label>
+        </div>
+      </div>
+      <p class="field-error" id="fdel-err" style="margin-bottom:0.8rem;">Please select a delivery method.</p>
+
+      <!-- PAXI sub-fields -->
+      <div class="sub-fields" id="sfPaxi">
+        <p class="del-note-txt">Choose your speed and enter your nearest PEP store for collection.</p>
+        <div class="speed-grid">
+          <div>
+            <input type="radio" name="paxiSpd" id="paxiStd" value="Standard PAXI – R59.95 (7–9 business days)" class="spd-radio">
+            <label class="spd-label" for="paxiStd"><p class="s-n">Standard</p><p class="s-p">R59.95</p><p class="s-t">7–9 business days</p></label>
+          </div>
+          <div>
+            <input type="radio" name="paxiSpd" id="paxiExp" value="Express PAXI – R109.95 (3–5 business days)" class="spd-radio">
+            <label class="spd-label" for="paxiExp"><p class="s-n">Express</p><p class="s-p">R109.95</p><p class="s-t">3–5 business days</p></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>PAXI Pickup Point (PEP Store Name) <span class="req">*</span></label>
+          <input type="text" id="fpaxiPoint" placeholder="e.g. PEP Meadowlands, Soweto">
+          <p class="field-error" id="fpaxiPoint-err">Please enter your PAXI pickup point.</p>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Province <span class="req">*</span></label>
+            <select id="fpaxiProv">
+              <option value="">Select province…</option>
+              <option>Gauteng</option><option>Western Cape</option><option>KwaZulu-Natal</option>
+              <option>Eastern Cape</option><option>Limpopo</option><option>Mpumalanga</option>
+              <option>North West</option><option>Free State</option><option>Northern Cape</option>
+            </select>
+            <p class="field-error" id="fpaxiProv-err">Please select your province.</p>
+          </div>
+          <div class="form-group">
+            <label>City / Town <span class="req">*</span></label>
+            <input type="text" id="fpaxiCity" placeholder="e.g. Soweto">
+            <p class="field-error" id="fpaxiCity-err">Please enter your city or town.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Courier sub-fields -->
+      <div class="sub-fields" id="sfCourier">
+        <p class="del-note-txt">Choose your delivery speed and provide your full street address.</p>
+        <div class="speed-grid">
+          <div>
+            <input type="radio" name="courierSpd" id="courierEco" value="Economy Delivery – R100 (5–7 business days)" class="spd-radio">
+            <label class="spd-label" for="courierEco"><p class="s-n">Economy</p><p class="s-p">R100</p><p class="s-t">5–7 business days</p></label>
+          </div>
+          <div>
+            <input type="radio" name="courierSpd" id="courierExp" value="Express Delivery – R150 (1–3 business days)" class="spd-radio">
+            <label class="spd-label" for="courierExp"><p class="s-n">Express</p><p class="s-p">R150</p><p class="s-t">1–3 business days</p></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Street Address <span class="req">*</span></label>
+          <input type="text" id="fstreet" placeholder="e.g. 14 Rose Street, Sandton">
+          <p class="field-error" id="fstreet-err">Please enter your street address.</p>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Province <span class="req">*</span></label>
+            <select id="fprov">
+              <option value="">Select province…</option>
+              <option>Gauteng</option><option>Western Cape</option><option>KwaZulu-Natal</option>
+              <option>Eastern Cape</option><option>Limpopo</option><option>Mpumalanga</option>
+              <option>North West</option><option>Free State</option><option>Northern Cape</option>
+            </select>
+            <p class="field-error" id="fprov-err">Please select your province.</p>
+          </div>
+          <div class="form-group">
+            <label>City / Suburb <span class="req">*</span></label>
+            <input type="text" id="fcity" placeholder="e.g. Sandton">
+            <p class="field-error" id="fcity-err">Please enter your city or suburb.</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Postal Code <span class="req">*</span></label>
+          <input type="text" id="fpostal" placeholder="e.g. 2196" maxlength="4">
+          <p class="field-error" id="fpostal-err">Please enter a valid 4-digit postal code.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="form-card">
+      <p class="form-card-title">3 · Order Notes</p>
+      <div class="form-group">
+        <label>Special Instructions (optional)</label>
+        <textarea id="fnotes" placeholder="Gift messages, scent preferences, or any other notes…"></textarea>
+      </div>
+    </div>
+
+    <!-- Pay button -->
+    <button class="pay-btn" id="payBtn" onclick="initiatePayment()">
+      <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+      Pay Securely with PayFast
+    </button>
+    <p class="pay-note">You will be redirected to PayFast's secure payment page. We accept all major cards, EFT, and SnapScan.</p>
+    <div class="secure-badges">
+      <span class="secure-badge"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4l5 2.18V11c0 3.5-2.33 6.79-5 7.93-2.67-1.14-5-4.43-5-7.93V7.18L12 5z"/></svg> SSL Encrypted</span>
+      <span class="secure-badge"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg> PayFast Secure</span>
+      <span class="secure-badge"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> PCI Compliant</span>
+    </div>
+  </div>
+</section>
+
+<!-- SHIPPING POLICY -->
+<section class="shipping" id="shipping">
+  <div class="sec-hdr">
+    <span class="sec-label">Delivery Information</span>
+    <h2 class="sec-title">Shipping Policy</h2>
+  </div>
+  <div class="ship-inner">
+    <div class="processing-banner">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+      <p>Orders are processed within <strong>1–3 business days</strong> after payment confirmation. Orders placed on weekends or public holidays will be processed on the next business day. A tracking number will be sent via SMS, email, or WhatsApp once your order has been shipped.</p>
+    </div>
+    <div class="ship-grid">
+      <div class="ship-card">
+        <p class="ship-card-title">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          PAXI Store-to-Store
+        </p>
+        <div class="ship-opt"><p class="ship-opt-name">Standard PAXI</p><div class="ship-opt-meta"><span class="ship-price">R59.95</span><span>7–9 business days</span></div></div>
+        <div class="ship-opt"><p class="ship-opt-name">Express PAXI</p><div class="ship-opt-meta"><span class="ship-price">R109.95</span><span>3–5 business days</span></div></div>
+        <p class="ship-foot">Delivered to your nearest PEP pickup point. SMS notification when ready for collection.</p>
+      </div>
+      <div class="ship-card">
+        <p class="ship-card-title">
+          <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+          The Courier Guy — Home Delivery
+        </p>
+        <div class="ship-opt"><p class="ship-opt-name">Economy Delivery</p><div class="ship-opt-meta"><span class="ship-price">R100</span><span>5–7 business days</span></div></div>
+        <div class="ship-opt"><p class="ship-opt-name">Express Delivery</p><div class="ship-opt-meta"><span class="ship-price">R150</span><span>1–3 business days</span></div></div>
+        <p class="ship-foot">Door-to-door delivery directly to your address, anywhere in South Africa.</p>
+      </div>
+    </div>
+    <ul class="notes-list">
+      <li>Delivery times are estimates and may vary due to location, weather, or public holidays.</li>
+      <li>Please ensure your delivery details are accurate before completing payment.</li>
+      <li>Aurévia is not responsible for delays caused by incorrect addresses or unavailable recipients.</li>
+      <li>If your parcel arrives damaged or is lost in transit, contact us within 48 hours of your shipping confirmation.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- CONTACT / HELP -->
+<section class="contact" id="contact">
+  <div class="sec-hdr">
+    <span class="sec-label">Need Help?</span>
+    <h2 class="sec-title" style="color:var(--cream)">WhatsApp Support</h2>
+  </div>
+  <div class="contact-inner">
+    <p>Have a question about a fragrance, your order status, or need help choosing a scent? Chat with us on WhatsApp — we respond fast.</p>
+    <a class="wa-btn" href="https://wa.me/27680647572?text=Hi%20Aurévia!%20I%20need%20some%20help%20with..." target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Chat with us · 068 064 7572
+    </a>
+    <p class="contact-note">For orders, use the checkout form above · WhatsApp for queries &amp; support only</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Auré<em>via</em> · Presence in Scent</div>
+  <div class="footer-copy">© 2026 Aurévia by Londo M · All rights reserved</div>
+</footer>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- PAYFAST LOADING OVERLAY -->
+<div class="pf-overlay" id="pfOverlay">
+  <div class="pf-box">
+    <div class="pf-spinner"></div>
+    <h3>Redirecting to PayFast</h3>
+    <p>Please wait — you're being securely redirected to complete your payment via PayFast.</p>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────
+const PRICE_PER_ITEM = 200;
+const MERCHANT_ID = '34927001';
+const MERCHANT_KEY = 'qstrvjog1x4hg';
+// For live: 'https://www.payfast.co.za/eng/process'
+// For sandbox testing: 'https://sandbox.payfast.co.za/eng/process'
+const PAYFAST_URL = 'https://www.payfast.co.za/eng/process';
+
+// ── CART ─────────────────────────────────────────
+let cart = [];
+
+function addToCart(btn) {
+  const card = btn.closest('.product-card');
+  const name = card.dataset.name;
+  if (cart.find(i => i.name === name)) {
+    showToast(name + ' is already in your order.');
+    return;
+  }
+  cart.push({ name });
+  btn.textContent = '✓ Added';
+  btn.classList.add('added');
+  btn.disabled = true;
+  renderCart();
+  showToast(name + ' added to your order.');
+}
+
+function removeFromCart(name) {
+  cart = cart.filter(i => i.name !== name);
+  // re-enable add button
+  document.querySelectorAll('.product-card').forEach(card => {
+    if (card.dataset.name === name) {
+      const btn = card.querySelector('.add-btn');
+      btn.textContent = '+ Add to Order';
+      btn.classList.remove('added');
+      btn.disabled = false;
+    }
+  });
+  renderCart();
+}
+
+function renderCart() {
+  const empty = document.getElementById('stripEmpty');
+  const itemsEl = document.getElementById('stripItems');
+  const totalEl = document.getElementById('cartTotal');
+  const amtEl = document.getElementById('totalAmt');
+  const navCount = document.getElementById('navCount');
+
+  navCount.textContent = cart.length;
+  itemsEl.innerHTML = '';
+  if (cart.length === 0) {
+    empty.style.display = 'block';
+    totalEl.style.display = 'none';
+  } else {
+    empty.style.display = 'none';
+    cart.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'cart-item-line';
+      div.innerHTML = `<span class="c-name">${item.name} <span style="font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;">55ml EDP</span></span>
+        <span style="display:flex;align-items:center;gap:0.5rem;">
+          <span class="c-price">R${PRICE_PER_ITEM}</span>
+          <button class="c-remove" onclick="removeFromCart('${item.name.replace(/'/g,"\\'")}')">Remove</button>
+        </span>`;
+      itemsEl.appendChild(div);
+    });
+    const total = cart.length * PRICE_PER_ITEM;
+    amtEl.textContent = 'R' + total.toFixed(2).replace(/\.00$/, '');
+    totalEl.style.display = 'flex';
+  }
+}
+
+function scrollToOrder() {
+  document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ── DELIVERY TOGGLE ──────────────────────────────
+function onDelivery() {
+  const val = document.querySelector('input[name="delivery"]:checked')?.value;
+  document.getElementById('sfPaxi').classList.toggle('active', val === 'paxi');
+  document.getElementById('sfCourier').classList.toggle('active', val === 'courier');
+  document.getElementById('fdel-err').classList.remove('show');
+}
+
+// ── VALIDATION ────────────────────────────────────
+function v(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function setErr(id, show) {
+  const err = document.getElementById(id + '-err');
+  const inp = document.getElementById(id);
+  if (err) err.classList.toggle('show', show);
+  if (inp) inp.classList.toggle('error', show);
+  return show;
+}
+
+// ── PAYFAST PAYMENT ──────────────────────────────
+function initiatePayment() {
+  // Cart check
+  if (cart.length === 0) {
+    document.getElementById('emptyWarn').classList.add('show');
+    document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+    return;
+  }
+  document.getElementById('emptyWarn').classList.remove('show');
+
+  let errors = false;
+  errors = setErr('fname', !v('fname')) || errors;
+  errors = setErr('fphone', v('fphone').replace(/\D/g,'').length < 9) || errors;
+  errors = setErr('femail', !/\S+@\S+\.\S+/.test(v('femail'))) || errors;
+
+  const method = document.querySelector('input[name="delivery"]:checked')?.value;
+  if (!method) { document.getElementById('fdel-err').classList.add('show'); errors = true; }
+
+  if (method === 'paxi') {
+    errors = setErr('fpaxiPoint', !v('fpaxiPoint')) || errors;
+    errors = setErr('fpaxiProv', !v('fpaxiProv')) || errors;
+    errors = setErr('fpaxiCity', !v('fpaxiCity')) || errors;
+  }
+  if (method === 'courier') {
+    errors = setErr('fstreet', !v('fstreet')) || errors;
+    errors = setErr('fprov', !v('fprov')) || errors;
+    errors = setErr('fcity', !v('fcity')) || errors;
+    errors = setErr('fpostal', !/^\d{4}$/.test(v('fpostal'))) || errors;
+  }
+
+  if (errors) {
+    document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+    return;
+  }
+
+  // Build item description
+  const itemNames = cart.map(i => i.name).join(', ');
+  const total = (cart.length * PRICE_PER_ITEM).toFixed(2);
+
+  // Build delivery info for custom field
+  let deliveryInfo = '';
+  if (method === 'paxi') {
+    const spd = document.querySelector('input[name="paxiSpd"]:checked')?.value || 'Speed not selected';
+    deliveryInfo = `PAXI | ${spd} | ${v('fpaxiPoint')}, ${v('fpaxiCity')}, ${v('fpaxiProv')}`;
+  } else {
+    const spd = document.querySelector('input[name="courierSpd"]:checked')?.value || 'Speed not selected';
+    deliveryInfo = `Courier | ${spd} | ${v('fstreet')}, ${v('fcity')}, ${v('fprov')} ${v('fpostal')}`;
+  }
+
+  // Split name
+  const nameParts = v('fname').trim().split(' ');
+  const firstName = nameParts[0];
+  const lastName = nameParts.slice(1).join(' ') || '-';
+
+  // PayFast POST form
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = PAYFAST_URL;
+
+  const fields = {
+    merchant_id: MERCHANT_ID,
+    merchant_key: MERCHANT_KEY,
+    return_url: window.location.href + '#order',
+    cancel_url: window.location.href + '#order',
+    notify_url: '',           // Add your IPN URL here if you have one
+    name_first: firstName,
+    name_last: lastName,
+    email_address: v('femail'),
+    cell_number: v('fphone').replace(/\s/g, ''),
+    amount: total,
+    item_name: 'Aurévia Fragrances',
+    item_description: itemNames + ' | ' + deliveryInfo,
+    custom_str1: v('fname'),
+    custom_str2: v('fphone'),
+    custom_str3: deliveryInfo,
+    custom_str4: v('fnotes') || '',
+    custom_str5: itemNames,
+    email_confirmation: '1',
+    confirmation_address: v('femail'),
+    payment_method: 'cc'
+  };
+
+  Object.entries(fields).forEach(([key, val]) => {
+    if (val === '') return;
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;
+    input.value = val;
+    form.appendChild(input);
+  });
+
+  document.body.appendChild(form);
+
+  // Show loading overlay then submit
+  document.getElementById('pfOverlay').classList.add('open');
+  setTimeout(() => { form.submit(); }, 900);
+}
+
+// ── TOAST ─────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// Init
+renderCart();
+</script>
+</body>
+</html>
