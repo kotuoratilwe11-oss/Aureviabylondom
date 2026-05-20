@@ -818,7 +818,7 @@ const itemsTtotal = cart.length * PRICE_PER_ITEM;
   let deliveryFee = 0;
   let deliveryInfo =' ';
   if (method === 'paxi' ) {
-    const spd. = document.querySelector('input[name=paxispd"[:checked')?.value || 'speed not selected';
+    const spd. = document.querySelector('input[name="paxispd"]:checked')?.value || 'speed not selected';
     if (spd.includes('R60')) deliveryFee = 60;
     else if (spd.includes('R110')) deliveryFee = 110;
     deliveryinfo = 'PAXI | ' + spd + ' | ' + v('fpaxiPoint') + ',  ' + v('fcity') + ',  ' + v( 'fpaxiprov');
