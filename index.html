@@ -812,30 +812,48 @@ function initiatePayment() {
   }
 
   // Build item description
-  const itemNames = cart.map(i => i.name).join(', ');
-  const total = (cart.length * PRICE_PER_ITEM).toFixed(2);
-
-  // Build delivery info for custom field
-  let deliveryInfo = '';
-  if (method === 'paxi') {
-    const spd = document.querySelector('input[name="paxiSpd"]:checked')?.value || 'Speed not selected';
-    deliveryInfo = `PAXI | ${spd} | ${v('fpaxiPoint')}, ${v('fpaxiCity')}, ${v('fpaxiProv')}`;
+  const itemNames = cart.map(i => i.name).join(', ')
+const itemsTtotal = cart.length * PRICE_PER_ITEM;
+// work out delivery fee from selected option
+  let deliveryFee = 0;
+  let deliveryInfo =' ';
+  if (method === 'paxi' ) {
+    const spd. = document.querySelector('input[name=paxispd"[:checked')?.value || 'speed not selected';
+    if (spd.includes('R60')) deliveryFee = 60;
+    else if (spd.includes('R110')) deliveryFee = 110;
+    deliveryinfo = 'PAXI | ' + spd + ' | ' + v('fpaxiPoint') + ',  ' + v('fcity') + ',  ' + v( 'fpaxiprov');
   } else {
-    const spd = document.querySelector('input[name="courierSpd"]:checked')?.value || 'Speed not selected';
-    deliveryInfo = `Courier | ${spd} | ${v('fstreet')}, ${v('fcity')}, ${v('fprov')} ${v('fpostal')}`;
+    const spd = document.querySelector ('input[name="courierspd"]:checked')?.value || 'speed not selected';
+    if (spd.includes('R180')) deliveryFee = 180;
+    else if (spd.includes('R150')) deliveryFee += 150;
+    deliveryInfo ='courier | ' + spd + ' | ' + v('fstreet') + ',   ' + v(,fcity') +' ,  ' + v('fprov') + '  ' + v(;fpostal');
   }
 
-  // Split name
-  const nameParts = v('fname').trim().split(' ');
-  const firstName = nameParts[0];
-  const lastName = nameParts.slice(1).join(' ') || '-';
+  const grandTotal = (itemsTotal  + deliveryFee).toFixed(2);
+  const total = grandTotal;
 
-  // PayFast POST form
-  const form = document.createElement('form');
-  form.method = 'POST';
-  form.action = PAYFAST_URL;
+  const confirmed = confirm(
+    'Payment summary\n\' +
+    'Fragrances (' + cart.length + '): R' + itemsTotal + '/n' +
+    'Delivery: R' + deliveryFee + '/n' +
+    '-------------------/n; +
+  Total to pay: R' + grandTotal + '/n/n' +
+    'Proceed to Payfast?'
+  );
+  if (confirmed) return;
+    
+                      
+                    
+      
+    
+    
+    
 
-  const fields = {
+  
+  
+
+
+  
     merchant_id: MERCHANT_ID,
     merchant_key: MERCHANT_KEY,
     return_url: window.location.href + '#order',
