@@ -825,7 +825,7 @@ const itemsTtotal = cart.length * PRICE_PER_ITEM;
   } else {
     const spd = document.querySelector ('input[name="courierspd"]:checked')?.value || 'speed not selected';
     if (spd.includes('R180')) deliveryFee = 180;
-    else if (spd.includes('R150')) deliveryFee += 150;
+    else if (spd.includes('R150')) deliveryFee = 150;
     deliveryInfo ='courier | ' + spd + ' | ' + v('fstreet') + ',   ' + v(,fcity') +' ,  ' + v('fprov') + '  ' + v(;fpostal');
   }
 
